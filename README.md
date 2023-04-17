@@ -145,3 +145,10 @@ CERTIFICATE_FILE="config/full-chain.cert.pem"
 # Private Key
 KEY_FILE="config/key.pem"
 ```
+
+Install and run:
+
+```sh
+npm i
+node connect_x509.js
+```
