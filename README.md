@@ -103,4 +103,45 @@ Create the certificate chain for Device-01:
 cat ./certs/device-01.cert.pem ./certs/azure-iot-test-only.intermediate.cert.pem ./certs/azure-iot-test-only.root.ca.cert.pem > ./certs/device-01-full-chain.cert.pem
 ```
 
+## 5 - Register the device
 
+Upload the root CA certificate:
+
+```sh
+az iot hub certificate create -n "Test-Only-Root" --hub-name iothub789 -g IoTEdgeResources -p openssl/certs/azure-iot-test-only.root.ca.cert.pem -v true
+```
+
+Register the device:
+
+```sh
+az iot hub device-identity create \
+    --device-id "device-01" \
+    --hub-name iothub789 \
+    --auth-method x509_ca
+```
+
+## 6 - Device connection
+
+Copy the full chain cert and the private key to the device:
+
+```
+mkdir device/config
+cp openssl/certs/device-01-full-chain.cert.pem device/config/full-chain.cert.pem
+cp openssl/private/device-01.key.pem device/config/key.pem
+```
+
+Create the `.env`:
+
+```sh
+# Global DPS hostname
+IOTHUB_HOST="iothub789.azure-devices.net"
+
+# Device ID (must match certificate)
+PROVISIONING_REGISTRATION_ID="device-01"
+
+# Public Cert (Full Chain)
+CERTIFICATE_FILE="config/full-chain.cert.pem"
+
+# Private Key
+KEY_FILE="config/key.pem"
+```
