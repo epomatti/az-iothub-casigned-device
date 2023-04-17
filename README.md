@@ -42,3 +42,29 @@ Examine the certificate:
 ```
 openssl x509 -noout -text -in ./certs/azure-iot-test-only.root.ca.cert.pem
 ```
+
+## 3 - Intermediate CA certificate
+
+Create the CA private key:
+
+```
+openssl genrsa -aes256 -passout pass:1234 -out ./private/azure-iot-test-only.intermediate.key.pem 4096
+```
+
+Create the CSR:
+
+```
+openssl req -new -sha256 -passin pass:1234 -config ./openssl_device_intermediate_ca.cnf -subj '/CN=Azure IoT Hub Intermediate Cert Test Only' -key ./private/azure-iot-test-only.intermediate.key.pem -out ./csr/azure-iot-test-only.intermediate.csr.pem
+```
+
+Sign the intermediate certificate with the root CA certificate:
+
+```
+openssl ca -batch -config ./openssl_root_ca.cnf -passin pass:1234 -extensions v3_intermediate_ca -days 30 -notext -md sha256 -in ./csr/azure-iot-test-only.intermediate.csr.pem -out ./certs/azure-iot-test-only.intermediate.cert.pem
+```
+
+Examine:
+
+```
+openssl x509 -noout -text -in ./certs/azure-iot-test-only.intermediate.cert.pem
+```
