@@ -1,5 +1,7 @@
 # Azure IoT Hub - CA Signed device
 
+<img src=".assets/iot.png" width=500 />
+
 ## 1 - Create the IoT Hub
 
 
